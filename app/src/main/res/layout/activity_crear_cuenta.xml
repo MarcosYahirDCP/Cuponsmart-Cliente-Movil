@@ -8,6 +8,18 @@
     tools:context=".CrearCuentaActivity"
     app:layout_constraintDimensionRatio="1:1">
 
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="30dp"
+        app:icon="@drawable/baseline_arrow_back_ios_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.01"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
@@ -140,5 +152,19 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_regresarInicio"
+        android:layout_width="57dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="30dp"
+        android:foregroundTint="#FFFCFC"
+        app:icon="@drawable/baseline_arrow_back_ios_24"
+        app:iconTint="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.01"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

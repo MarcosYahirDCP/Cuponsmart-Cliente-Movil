@@ -8,6 +8,10 @@
     <style name="Theme.Cuponsmart_Android" parent="Base.Theme.Cuponsmart_Android" />
     <style name="DatePickerTheme" parent="android:Theme.Material.Light.Dialog">
         <item name="android:colorAccent">#000000</item>
+    </style>
 
+    <style name="Theme.BottonNavigation" parent="Base.Theme.Cuponsmart_Android"/>
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#FFFFFF</item>
     </style>
 </resources>

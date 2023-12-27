@@ -3,11 +3,13 @@ package uv.tc.cuponsmart_android.modelo
 import android.content.Context
 import android.widget.Toast
 import com.koushikdutta.ion.Ion
+import uv.tc.cuponsmart_android.modelo.poko.RespuestaHTTP
 import uv.tc.cuponsmart_android.util.Constantes
+import java.net.MalformedURLException
+import java.util.Objects
 
 class ConexionWS {
     companion object {
-
         fun peticionGET(context: Context, url: String, callback: (String) -> Unit) {
             var respuestaPeticion = ""
             Ion.with(context).load("GET", Constantes.URL_WS + url).asString(Charsets.UTF_8)
@@ -22,6 +24,7 @@ class ConexionWS {
                     }
                 }
         }
+
 
 
         fun peticionPOST(context: Context, url: String, json: String, callback: (String) -> Unit) {
@@ -39,6 +42,7 @@ class ConexionWS {
                     }
                 }
         }
+
 
         fun peticionPUT(context: Context, url: String, json: String, callback: (String) -> Unit) {
             var respuestaPeticion = ""

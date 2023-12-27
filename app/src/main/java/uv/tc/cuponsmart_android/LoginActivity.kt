@@ -125,8 +125,6 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this@LoginActivity,respuestaLogin.mensaje, Toast.LENGTH_LONG).show()
         if (!respuestaLogin.error){
             irPantallaPrincipal(respuestaLogin.clienteSesion) //a como debe ser en el postman
-        }else{
-
         }
     }
     fun irPantallaPrincipal( cliente : Cliente){

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import uv.tc.cuponsmart_android.OnFragmentInteractionListener
 import uv.tc.cuponsmart_android.R
 import uv.tc.cuponsmart_android.databinding.FragmentDatosPersonalesBinding
@@ -17,6 +18,7 @@ import uv.tc.cuponsmart_android.modelo.poko.Cliente
 
 class DatosPersonalesFragment(private val listener: OnFragmentInteractionListener) : Fragment(),OnFragmentInteractionListener {
     private lateinit var binding: FragmentDatosPersonalesBinding
+    var fechaSQL =""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,13 +31,10 @@ class DatosPersonalesFragment(private val listener: OnFragmentInteractionListene
         binding = FragmentDatosPersonalesBinding.inflate(inflater, container, false)
 
         return binding.root
-
-
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         personalizarComponentes()
-
     }
 
     private fun mostrarDatePicker() {
@@ -45,7 +44,10 @@ class DatosPersonalesFragment(private val listener: OnFragmentInteractionListene
     }
 
     fun onDateSelected (dia:Int, mes: Int, anio:Int){
-        binding.etFechaNacimiento.setText("$dia-${mes+1}-$anio")
+        val fechaFormateadaSQL = String.format("%04d-%02d-%02d", anio, mes + 1, dia)
+        val fechaFormateadaView = String.format("%02d-%02d-%04d", dia,mes+1,anio)
+        binding.etFechaNacimiento.setText(fechaFormateadaView)
+        fechaSQL = fechaFormateadaSQL
     }
 
     override fun obtenerDatos(): Map<String, String> {
@@ -53,7 +55,7 @@ class DatosPersonalesFragment(private val listener: OnFragmentInteractionListene
             "nombre" to binding.etNombre.text.toString(),
             "apellidoP" to binding.etApellidoP.text.toString(),
             "apellidoM" to binding.etApellidoM.text.toString(),
-            "fechaNacimiento" to binding.etFechaNacimiento.text.toString()
+            "fechaNacimiento" to fechaSQL
         )
         return datos
     }

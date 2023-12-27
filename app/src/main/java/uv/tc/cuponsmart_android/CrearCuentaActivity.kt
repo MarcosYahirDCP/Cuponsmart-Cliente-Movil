@@ -4,21 +4,27 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.gson.Gson
+import uv.tc.cuponsmart_android.archivos_dao.ClienteDAO
+import uv.tc.cuponsmart_android.archivos_dao.UbicacionDAO
 import uv.tc.cuponsmart_android.databinding.ActivityCrearCuentaBinding
 import uv.tc.cuponsmart_android.fragments.DatosCuentaFragment
 import uv.tc.cuponsmart_android.modelo.poko.Cliente
-import java.util.Objects
+import uv.tc.cuponsmart_android.modelo.poko.Coordenada
+import uv.tc.cuponsmart_android.modelo.poko.Mensaje
+import uv.tc.cuponsmart_android.modelo.poko.Ubicacion
 
 
 class CrearCuentaActivity : AppCompatActivity(), OnFragmentInteractionListener {
         lateinit var binding: ActivityCrearCuentaBinding
         var cliente = Cliente()
+    var idUbicacion : Int = 0
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -92,7 +98,6 @@ class CrearCuentaActivity : AppCompatActivity(), OnFragmentInteractionListener {
                     }
                     // Obtener y procesar los datos del fragmento actual
                     val datos = fragment.obtenerDatos()
-//                    Toast.makeText(this, "El nombre es ${datos.get("nombre")}", Toast.LENGTH_SHORT).show()
                     // Obtener el identificador del fragmento actual
                     val fragmentId = fragment.obtenerFragmentId()
 
@@ -109,7 +114,7 @@ class CrearCuentaActivity : AppCompatActivity(), OnFragmentInteractionListener {
                         1 -> {
 
                             // Fragmento de DatosCuenta
-                            // Puedes acceder a los datos de cuenta si es necesario
+
                             cliente.correo = datos.get("correo")
                             cliente.contraseña = datos.get("password")
                             cliente.telefono = datos.get("numeroTelefono")
@@ -119,32 +124,74 @@ class CrearCuentaActivity : AppCompatActivity(), OnFragmentInteractionListener {
 
                     }
                     if (currentItem == 2) {
-
-                        // Último fragmento, realizar acciones finales con los datos
-                        val gson = Gson()
-                        val jsonParam = gson.toJson(
-                            mapOf(
-                                "calle" to datos.get("calle"),
-                                "municipio" to datos.get("municipio"),
-                                "estado" to datos.get("estado"),
-                                "codigoPostal" to datos.get("codig0oPostal"),
-                                "colonia" to datos.get("colonia"),
-                                "numero" to datos.get("numero"),
-                                "logintud" to datos.get("longitud"),
-                                "latitud" to datos.get("latitud")
-                            )
-                        )
+                       crearUbicacion(datos)
                     } else {
                         // Pasar a la siguiente página
                         binding.vp2FrameContainer.setCurrentItem(currentItem + 1, false)
                     }
-
                 } else {
                     // Mostrar un mensaje de error o realizar otra acción si los campos no están llenos
                     Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
+    fun crearUbicacion(datos: Map<String, String>) {
+        var ubicacionObtenida:Ubicacion = Ubicacion()
+        ubicacionObtenida.calle=datos.get("calle")
+        ubicacionObtenida.idMunicipio =  Integer.parseInt(datos.get("idMunicipio"))
+        ubicacionObtenida.codigoPostal = datos.get("codigoPostal")
+        ubicacionObtenida.colonia=datos.get("colonia")
+        ubicacionObtenida.numero=datos.get("numero")
+        ubicacionObtenida.longitud=datos.get("longitud")
+        ubicacionObtenida.latitud=datos.get("latitud")
+        UbicacionDAO.agregarUbicacion(this@CrearCuentaActivity,"ubicacion/agregarUbicacion/",ubicacionObtenida){
+                respuesta ->
+            serializarRespuestaAgregarUbicacion(respuesta, ubicacionObtenida.latitud,ubicacionObtenida.longitud)
+
+        }
+    }
+    fun serializarRespuestaAgregarUbicacion(json : String,latitud: String?, longitud: String?){
+        val gson  = Gson()
+        val respuestaUbicacion = gson.fromJson(json, Mensaje::class.java)
+        Toast.makeText(this@CrearCuentaActivity,respuestaUbicacion.mensaje, Toast.LENGTH_LONG).show()
+        if(!respuestaUbicacion.error){
+            obtenerIdUbicacion(latitud,longitud)
+        }
+    }
+    fun obtenerIdUbicacion(latitud: String?, longitud: String?){
+        var coordenada =Coordenada()
+        coordenada.latitud = latitud.toString()
+        coordenada.longitud = longitud.toString()
+
+        UbicacionDAO.obtenerIDUbicacionCreada(this@CrearCuentaActivity, "ubicacion/obtenerUbicacionRegistro/",coordenada){
+                respuesta->
+            var idUbicacion  = respuesta
+            cliente.idUbicacion=idUbicacion
+            crearClienteNuevo(cliente)
+        }
+    }
+    fun crearClienteNuevo(cliente: Cliente){
+        ClienteDAO.crearClienteNuevo(this@CrearCuentaActivity,"cliente/agregarCliente/", cliente){
+            respuesta->
+            serializarRespuestaAgregarCliente(respuesta)
+        }
+    }
+
+    fun serializarRespuestaAgregarCliente(json : String){
+        val gson = Gson()
+        val respuestaCliente = gson.fromJson(json, Mensaje::class.java)
+        Toast.makeText(this@CrearCuentaActivity,respuestaCliente.mensaje,Toast.LENGTH_LONG).show()
+        if(!respuestaCliente.error){
+            irPantallaLogin()
+        }
+    }
+
+    fun irPantallaLogin(){
+        val intent = Intent(this@CrearCuentaActivity,LoginActivity::class.java)
+        startActivity(intent)
+        this.finish()
+    }
     private fun animacionBotones(boton : Button){
         val colorAnimation = ObjectAnimator.ofArgb(boton, "backgroundColor", Color.parseColor("#03e9f4"), R.color.black)
         colorAnimation.duration = 1000

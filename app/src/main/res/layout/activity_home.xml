@@ -5,12 +5,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
-
-    <TextView
-        android:id="@+id/hola"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bienvenido amigo a casa otra vez"
-        tools:layout_editor_absoluteX="134dp"
-        tools:layout_editor_absoluteY="255dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

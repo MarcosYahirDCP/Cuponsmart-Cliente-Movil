@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -33,6 +34,9 @@ import uv.tc.cuponsmart_android.R
 import uv.tc.cuponsmart_android.databinding.FragmentDatosUbicacionBinding
 import uv.tc.cuponsmart_android.archivos_dao.CatalogoDAO
 import uv.tc.cuponsmart_android.modelo.poko.Estado
+import uv.tc.cuponsmart_android.modelo.poko.Municipio
+import kotlin.math.pow
+import kotlin.math.roundToLong
 
 @Suppress("UNCHECKED_CAST")
 class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener) : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener,OnFragmentInteractionListener,
@@ -45,7 +49,9 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var estados: List<Estado>
+    private lateinit var municipios: List<Municipio>
     private lateinit var progressDialog: ProgressDialog
+    private var idMunicipioSeleccionado: Int =0
 
 
 
@@ -134,8 +140,10 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
            CatalogoDAO.obtenerMunicipiosEstado(requireContext(), "catalogo/obtenerMunicipiosEstados/$idEstado"){
                municipios ->
                if (municipios !=null){
+                   this.municipios = municipios
                    val adaptadorMunicipios = ArrayAdapter(requireActivity(), com.google.android.material.R.layout.support_simple_spinner_dropdown_item, municipios)
                    binding.spMunicipio.adapter = adaptadorMunicipios
+                   binding.spMunicipio.onItemSelectedListener=this@DatosUbicacionFragment
                }
            }
     }
@@ -253,8 +261,10 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
         val nuevaCalle = calle.substring(0, i + 1)
         val colonia = address.locality
         val codigoPostal = address.postalCode
-        latitud = latLng.latitude
-        longitud = latLng.longitude
+
+        latitud = latLng.latitude.roundTo(8)
+        longitud = latLng.longitude.roundTo(8)
+        Toast.makeText(context, "La latitud es: ${latLng.latitude} y la longitud es ${latLng.longitude}", Toast.LENGTH_LONG).show()
 
         // Se asignan los datos a los campos de texto
         binding.etCalle.setText(nuevaCalle)
@@ -269,6 +279,10 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
 
         mMap.addMarker(markerOptions)
 
+    }
+    fun Double.roundTo(decimals: Int): Double {
+        val factor = 10.0.pow(decimals.toDouble())
+        return (this * factor).roundToLong() / factor
     }
 
     override fun onDestroy() {
@@ -288,8 +302,11 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
             "codigoPostal" to binding.etCodigoPostal.text.toString(),
             "colonia" to binding.etColonia.text.toString(),
             "numero" to binding.etNumeroCasa.text.toString(),
-            "logintud" to longitud,
-            "latitud" to latitud
+            "longitud" to longitud.toString(),
+            "latitud" to latitud.toString(),
+            "idMunicipio" to idMunicipioSeleccionado.toString()
+
+
         )
         return datos as Map<String, String>
     }
@@ -324,7 +341,14 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        llenarMunicipios(estados[position].idEstado)
+        when(parent?.id){
+            R.id.sp_estado->{
+                llenarMunicipios(estados[position].idEstado)
+            }
+            R.id.sp_municipio ->{
+                idMunicipioSeleccionado =municipios[position].idMunicipio
+            }
+        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
