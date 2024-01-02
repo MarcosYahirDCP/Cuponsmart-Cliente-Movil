@@ -1,22 +1,23 @@
 package uv.tc.cuponsmart_android.fragments
 
 import android.Manifest
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.PorterDuff
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -38,7 +39,6 @@ import uv.tc.cuponsmart_android.modelo.poko.Municipio
 import kotlin.math.pow
 import kotlin.math.roundToLong
 
-@Suppress("UNCHECKED_CAST")
 class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener) : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener,OnFragmentInteractionListener,
     AdapterView.OnItemSelectedListener {
 
@@ -50,10 +50,10 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
     private lateinit var locationCallback: LocationCallback
     private lateinit var estados: List<Estado>
     private lateinit var municipios: List<Municipio>
-    private lateinit var progressDialog: ProgressDialog
     private var idMunicipioSeleccionado: Int =0
 
-
+        private lateinit var shimmerContainer: LinearLayout
+        private lateinit var dataContainer: LinearLayout
 
     private var isInitialMapLoad = true
 
@@ -70,22 +70,34 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentDatosUbicacionBinding.inflate(inflater, container, false)
-
+        shimmerContainer = binding.vistaCargando
+        dataContainer = binding.vistaCargada
         cargarSpiners()
 
         return binding.root
     }
 
+    private fun showData() {
+        binding.vistaCargando.isVisible=false
+        binding.vistaCargada.isVisible = true
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        crearDialogCarga()
+        //crearDialogCarga()
         personalizarComponentes()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            showData()
+        },5000)
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
     }
 
     fun personalizarComponentes(){
+        
         binding.etCalle.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
                 binding.etCalle.getBackground().setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP);
@@ -148,12 +160,12 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
            }
     }
 
-    fun crearDialogCarga(){
-        progressDialog = ProgressDialog(requireContext())
-        progressDialog.setMessage("Cargando...")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
-    }
+//    fun crearDialogCarga(){
+//        progressDialog = ProgressDialog(requireContext())
+//        progressDialog.setMessage("Cargando...")
+//        progressDialog.setCancelable(false)
+//        progressDialog.show()
+//    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -174,9 +186,7 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
                     // Mover la cámara a la ubicación actual y hacer zoom
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, DEFAULT_ZOOM))
 
-                    // Añadir un marcador en la ubicación del usuario
-                    mMap.addMarker(MarkerOptions().position(currentLatLng).title("Mi Ubicación"))
-                    progressDialog.dismiss()
+                    //progressDialog.dismiss()
                 }
             }
         } else {
@@ -186,7 +196,7 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
-            progressDialog.dismiss()
+            //progressDialog.dismiss()
         }
 
 
