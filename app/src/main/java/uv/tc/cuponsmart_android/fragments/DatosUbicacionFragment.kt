@@ -33,7 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import uv.tc.cuponsmart_android.OnFragmentInteractionListener
 import uv.tc.cuponsmart_android.R
 import uv.tc.cuponsmart_android.databinding.FragmentDatosUbicacionBinding
-import uv.tc.cuponsmart_android.archivos_dao.CatalogoDAO
+import uv.tc.cuponsmart_android.modelo.DAO.CatalogoDAO
 import uv.tc.cuponsmart_android.modelo.poko.Estado
 import uv.tc.cuponsmart_android.modelo.poko.Municipio
 import kotlin.math.pow

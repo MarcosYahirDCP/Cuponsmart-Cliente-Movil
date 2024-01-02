@@ -1,4 +1,4 @@
-package uv.tc.cuponsmart_android.archivos_dao
+package uv.tc.cuponsmart_android.modelo.DAO
 
 import android.content.Context
 import com.google.gson.Gson
@@ -14,7 +14,7 @@ class ClienteDAO {
             }
         }
         fun crearClienteNuevo(context: Context, url: String, cliente: Cliente, callback: (String) -> Unit){
-            var parametros :String =gson.toJson(cliente)
+            var parametros :String = gson.toJson(cliente)
             ConexionWS.peticionPOST(context,url,parametros){respuesta ->
                 callback(respuesta)
             }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_categorias"
+        android:icon="@drawable/icon_lista_promociones"
+        android:title="Categorias" />
+    <item
+        android:id="@+id/menu_promociones"
+        android:icon="@drawable/icon_categorias_promociones"
+        android:title="Promociones" />
+    <item
+        android:id="@+id/menu_perfil"
+        android:icon="@drawable/icon_perfil"
+        android:title="Perfil" />
+</menu>

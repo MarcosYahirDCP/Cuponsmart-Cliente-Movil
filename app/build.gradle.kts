@@ -55,4 +55,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.github.shuhart:stepview:1.5.1")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation ("nl.joery.animatedbottombar:library:1.1.0")
+
 }

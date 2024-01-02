@@ -2,7 +2,6 @@ package uv.tc.cuponsmart_android
 
 import android.animation.ObjectAnimator
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -17,14 +16,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.koushikdutta.ion.Ion
-import uv.tc.cuponsmart_android.archivos_dao.ClienteDAO
+import uv.tc.cuponsmart_android.modelo.DAO.ClienteDAO
 import uv.tc.cuponsmart_android.databinding.ActivityLoginBinding
 import uv.tc.cuponsmart_android.modelo.poko.Cliente
 import uv.tc.cuponsmart_android.modelo.poko.RespuestaLogin
 
 
 class LoginActivity : AppCompatActivity() {
+    // ------------- DECLARACION DE VARIABLES -----------//
     lateinit var binding : ActivityLoginBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -34,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
 
 
     }
+    //--------- METODOS PRA PERSONALZIAR LOS COMPONENTES DE LA PANTALLA -------------//
     private fun personalizacionComponentes(){
 
         val mitextoU = SpannableString("¿Olvidaste tu contraseña? Clic aquí")
@@ -94,6 +96,7 @@ class LoginActivity : AppCompatActivity() {
         colorAnimation.start()
     }
 
+    //---------- VALIDACION DE LOS CAMPOS DEL LOGIN ----------//
     fun validarCamposLogin():Boolean{
         var esCorrecto = true
         if (binding.etCorreoUsuario.text.isNullOrBlank()){
@@ -107,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
         return esCorrecto
     }
 
-
+    //---------- VERIFICAR LAS CREDENCIALES -----------//
     fun verificarCredencialesVacias(email:String, password : String) {
         Ion.getDefault(this@LoginActivity).conscryptMiddleware.enable(false)
         val gson = Gson()
@@ -117,7 +120,7 @@ class LoginActivity : AppCompatActivity() {
             serializarRespuestaLogin(respuesta)
         }
     }
-
+    //-------- INTERPRETAR LA RESPUESTA QUE RETORNA LA CONSULTA LOGIN ----------//
     fun serializarRespuestaLogin (json : String){
         val gson = Gson()
         Log.d("Respuesta JSON", json)
@@ -127,13 +130,12 @@ class LoginActivity : AppCompatActivity() {
             irPantallaPrincipal(respuestaLogin.clienteSesion) //a como debe ser en el postman
         }
     }
+    //---------- METODO PARA IR A LA PANTALLA PRINCIPAL ----------//
     fun irPantallaPrincipal( cliente : Cliente){
-        /* val gson = Gson()
-         val stringPaciente = gson.toJson(paciente)*/
-
         val intent = Intent(this@LoginActivity,HomeActivity::class.java)
-       // intent.extras!!.putString("cliente",string)
-        // intent.extras!!.putString("paciente", stringPaciente)
+        val gson = Gson()
+        val string =gson.toJson(cliente)
+        intent.extras!!.putString("cliente",string)
         startActivity(intent)
         this.finish()
     }

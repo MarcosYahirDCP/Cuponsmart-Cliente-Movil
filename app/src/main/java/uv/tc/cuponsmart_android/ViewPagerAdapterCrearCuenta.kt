@@ -8,7 +8,7 @@ import uv.tc.cuponsmart_android.fragments.DatosCuentaFragment
 import uv.tc.cuponsmart_android.fragments.DatosPersonalesFragment
 import uv.tc.cuponsmart_android.fragments.DatosUbicacionFragment
 
-class ViewPagerAdapter(
+class ViewPagerAdapterCrearCuenta(
     fragmentManager: FragmentManager,
     lifecycle:Lifecycle,
     private val listener: OnFragmentInteractionListener

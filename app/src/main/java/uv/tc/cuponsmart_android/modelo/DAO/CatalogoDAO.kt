@@ -1,11 +1,8 @@
-package uv.tc.cuponsmart_android.archivos_dao
+package uv.tc.cuponsmart_android.modelo.DAO
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import com.google.gson.Gson
-import org.json.JSONArray
-import org.json.JSONException
 import uv.tc.cuponsmart_android.modelo.ConexionWS
 import uv.tc.cuponsmart_android.modelo.poko.Estado
 import uv.tc.cuponsmart_android.modelo.poko.Municipio
