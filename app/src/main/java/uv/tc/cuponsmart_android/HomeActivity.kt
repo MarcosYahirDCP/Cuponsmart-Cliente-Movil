@@ -70,4 +70,5 @@ class HomeActivity : AppCompatActivity() {
         args.putParcelable("cliente",cliente)
         fragment.arguments = args
     }
+
 }

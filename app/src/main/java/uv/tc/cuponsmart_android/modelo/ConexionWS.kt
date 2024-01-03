@@ -25,8 +25,6 @@ class ConexionWS {
                 }
         }
 
-
-
         fun peticionPOST(context: Context, url: String, json: String, callback: (String) -> Unit) {
             var respuestaPeticion = ""
             Ion.with(context).load("POST", Constantes.URL_WS + url)

@@ -132,10 +132,11 @@ class LoginActivity : AppCompatActivity() {
     }
     //---------- METODO PARA IR A LA PANTALLA PRINCIPAL ----------//
     fun irPantallaPrincipal( cliente : Cliente){
-        val intent = Intent(this@LoginActivity,HomeActivity::class.java)
         val gson = Gson()
         val string =gson.toJson(cliente)
-        intent.extras!!.putString("cliente",string)
+        val intent = Intent(this@LoginActivity,HomeActivity::class.java)
+
+        intent.putExtra("cliente",string)
         startActivity(intent)
         this.finish()
     }
