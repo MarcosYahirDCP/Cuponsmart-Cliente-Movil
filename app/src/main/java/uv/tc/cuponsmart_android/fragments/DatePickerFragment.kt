@@ -23,19 +23,19 @@ class DatePickerFragment(val listener: (dia:Int, mes:Int, anio:Int) -> Unit): Di
         val mes = c.get(Calendar.MONTH)
         val anio = c.get(Calendar.YEAR)
 
-        // Aplica el estilo DatePickerTheme al DatePickerDialog
+    //------- APLICAR TEMA AL DATEPICKER -------//
         val picker = DatePickerDialog(requireContext(), R.style.DatePickerTheme, this, anio, mes, dia)
-
+    //--------- SE ESTABLECEN LAS CARACTERISTICAS DE LA FECHA A MOSTRAR -------//
         val maxYear = c.get(Calendar.YEAR) - 14
         val maxDate = Calendar.getInstance()
         maxDate.set(maxYear, 0,0)
 
-        //Parchando el color del texto de los botones
+    //------- PARCHANDO EL COLOR DE LOS BOTONES DE TEXTO ----------//
         picker.setOnShowListener { dialog ->
             val positiveButton = (dialog as DatePickerDialog).getButton(DialogInterface.BUTTON_POSITIVE)
             val negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
 
-            // Cambiar el color de los botones aquí
+    //------- CAMBIAR EL COLOR DE LOS BOTONES --------//
             positiveButton.setTextColor(Color.BLACK)
             negativeButton.setTextColor(Color.BLACK)
         }
