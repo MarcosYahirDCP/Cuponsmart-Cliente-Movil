@@ -1,5 +1,8 @@
 package uv.tc.cuponsmart_android.fragments
 
+import android.animation.ObjectAnimator
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.os.Handler
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Toast
 import com.google.gson.Gson
 import uv.tc.cuponsmart_android.R
@@ -15,6 +20,7 @@ import uv.tc.cuponsmart_android.databinding.FragmentConfiguracionUbicacionBindin
 import uv.tc.cuponsmart_android.databinding.FragmentDatosUbicacionBinding
 import uv.tc.cuponsmart_android.modelo.ConexionWS
 import uv.tc.cuponsmart_android.modelo.DAO.CatalogoDAO
+import uv.tc.cuponsmart_android.modelo.DAO.ClienteDAO
 import uv.tc.cuponsmart_android.modelo.DAO.UbicacionDAO
 import uv.tc.cuponsmart_android.modelo.poko.Cliente
 import uv.tc.cuponsmart_android.modelo.poko.Estado
@@ -49,6 +55,12 @@ class ConfiguracionUbicacionFragment : Fragment(), AdapterView.OnItemSelectedLis
         cargarSpiners()
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        personalizarComponentes()
+
+    }
   
     //-------------- METODO PARA OBTENER LOS DATOS DE LA UBICACION ---------------//
     private  fun cargarDatosUbicacion(idUbicacion:Int){
@@ -70,13 +82,39 @@ class ConfiguracionUbicacionFragment : Fragment(), AdapterView.OnItemSelectedLis
             serializarRespuestaMunicipio(respuesta)
         }
     }
+    //---------- INTERPRETAR RESPUESTA DE LA BUSQUEDA DE MUNICIPIO -------------//
     private fun serializarRespuestaMunicipio(json:String){
         municipio = gson.fromJson(json,Municipio::class.java)
+        cargarSpinnersPerfil(municipio)
+
     }
+
+
+
+
+    //----------- METODO PARA ESTABLECER EN EL SPINNER LOS DATOS POR DEFECTO ----------------//
+    private fun cargarSpinnersPerfil(municipio: Municipio){
+        Toast.makeText(requireContext(), "El municipio pasado es ${municipio.nombre} con id ${municipio.idMunicipio}",Toast.LENGTH_SHORT).show()
+        val indiceEstado = estados.indexOfFirst { it.idEstado == municipio.idEstado }
+        binding.spEstado.setSelection(indiceEstado)
+       espera(municipio.idMunicipio)
+    }
+
+    //----------- METODO PARA PAUSAR EL SISTEMA 200 MILISEGUNDOS PARA QUE SE INICIE LA LISTA DE MUNICIPIOS ------//
+    private fun espera(idMunicipio: Int){
+        val handler = Handler()
+        handler.postDelayed({
+            val indiceMunicipio = municipios.indexOfFirst { it.idMunicipio == idMunicipio }
+            binding.spMunicipio.setSelection(indiceMunicipio)
+        }, 200)
+
+    }
+
     //-------------- OBTENER LOS DATOS DEL CLIENTE DE LA ACTIVITY DESDE EL FRAGMENT -------//
     private fun obtenerDatosActivity() {
         cliente = arguments?.getParcelable("cliente")!!
     }
+
     //--------- METODO PARA LLENAR EL SPINER ESTADO -------------//
     private fun cargarSpiners(){
         CatalogoDAO.obtenerEstados(requireContext(),"catalogo/obtenerEstados"){ estados ->
@@ -105,6 +143,57 @@ class ConfiguracionUbicacionFragment : Fragment(), AdapterView.OnItemSelectedLis
         }
     }
 
+    //-------- METODO PARA PERSONALIZAR COMPONENTES Y EVENTOS ---------//
+    private fun personalizarComponentes(){
+        binding.spMunicipio.isEnabled=false
+        binding.spMunicipio.isEnabled=false
+        binding.etCalle.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus){
+                binding.etCalle.getBackground().setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP);
+            }else{
+                binding.etCalle.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+
+        binding.etColonia.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus){
+                binding.etColonia.getBackground().setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP);
+            }else{
+                binding.etColonia.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+
+        binding.etCodigoPostal.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus){
+                binding.etCodigoPostal.getBackground().setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP);
+            }else{
+                binding.etCodigoPostal.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+
+        binding.etNumeroCasa.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus){
+                binding.etNumeroCasa.getBackground().setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP);
+            }else{
+                binding.etNumeroCasa.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+
+
+    }
+
+    //------ METODO PARA GUARDAR LOS CAMBIOS DEL PERFIL --------//
+
+    //-------- METODO PARA LAS ANIMACIONES DE LOS BOTONES ----------//
+    private fun animacionBotones(boton : Button){
+        val colorAnimation = ObjectAnimator.ofArgb(boton, "backgroundColor",
+            Color.parseColor("#03e9f4"),
+            Color.parseColor("#000000"))
+        colorAnimation.duration = 1000
+        colorAnimation.start()
+    }
+
+    //------------ METODO ESTATICO PARA EL ENVIO/RECEPCION DE DATOS EN EL FRAGMENTE ------------//
     companion object {
         fun newInstance(cliente: Cliente): ConfiguracionUbicacionFragment {
             val fragment = ConfiguracionUbicacionFragment()
@@ -114,7 +203,7 @@ class ConfiguracionUbicacionFragment : Fragment(), AdapterView.OnItemSelectedLis
             return fragment
         }
     }
-
+    //-------------- METODOS DE LA INTERFACE -------------//
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when(parent?.id){
             R.id.sp_estado->{
@@ -127,6 +216,5 @@ class ConfiguracionUbicacionFragment : Fragment(), AdapterView.OnItemSelectedLis
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
     }
 }

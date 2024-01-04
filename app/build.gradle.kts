@@ -56,5 +56,6 @@ dependencies {
     implementation("com.github.shuhart:stepview:1.5.1")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation ("nl.joery.animatedbottombar:library:1.1.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 
 }
