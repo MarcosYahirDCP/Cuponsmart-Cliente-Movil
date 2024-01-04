@@ -3,6 +3,7 @@ package uv.tc.cuponsmart_android.fragments
 import Checklist
 import android.graphics.PorterDuff
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -28,6 +30,7 @@ import uv.tc.cuponsmart_android.modelo.poko.Promocion
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import java.time.LocalDate
 import java.util.ArrayList
 
 
@@ -121,36 +124,60 @@ class PromocionesFragment : Fragment(), NotificarClick,  AdapterView.OnItemSelec
 //        obtenerPromocionesFechaInicio(fechaEcode)
 
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun obtenerPromocionesFechaInicio(fecha: String){
         PromocionDAO.obtenerPromocionesFechaInicio(requireContext(), "promocion/promocionFechaInicio", fecha){
             respuesta->
             serialziarRespuestaFechaInicio(respuesta)
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun serialziarRespuestaFechaInicio(json: String){
         val typeLista= object : TypeToken<ArrayList<Promocion>>() {}.type
         listaPromociones = gson.fromJson(json,typeLista)
+        // Obtener la fecha actual
+        val fechaActual = LocalDate.now()
+
+        // Filtrar las promociones con fecha de finalización después de la fecha actual
+        listaPromociones = listaPromociones.filter {
+            it.finPromocion?.let { fechaFin ->
+                LocalDate.parse(fechaFin).isAfter(fechaActual)
+            } ?: false
+        } as ArrayList<Promocion>
         cargarInformacionRecycler()
     }
     private fun limpiarRecycler() {
         listaPromociones.clear()
         cargarInformacionRecycler()
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun obtenerPromociones(){
         PromocionDAO.obtenerPromociones(requireContext(),"promocion/promociones"){
             respuesta ->
             serializarRespuestaPromociones(respuesta)
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun obtenerPromocionesCategoria(idCategoria : Int){
         PromocionDAO.obtenerPromocionesCategoria(requireContext(), "promocion/promocionCategoria", idCategoria){
                 respuesta ->
             serializarRespuestaPromociones(respuesta)
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun serializarRespuestaPromociones(json : String){
         val typeLista= object : TypeToken<ArrayList<Promocion>>() {}.type
         listaPromociones = gson.fromJson(json,typeLista)
+        // Obtener la fecha actual
+        val fechaActual = LocalDate.now()
+
+        // Filtrar las promociones con fecha de finalización después de la fecha actual
+        listaPromociones = listaPromociones.filter {
+            it.finPromocion?.let { fechaFin ->
+                LocalDate.parse(fechaFin).isAfter(fechaActual)
+            } ?: false
+        } as ArrayList<Promocion>
+
         cargarInformacionRecycler()
     }
     private  fun cargarInformacionRecycler(){
