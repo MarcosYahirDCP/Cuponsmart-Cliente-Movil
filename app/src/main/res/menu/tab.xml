@@ -3,7 +3,7 @@
     <item
         android:id="@+id/menu_categorias"
         android:icon="@drawable/icon_lista_promociones"
-        android:title="Categorias" />
+        android:title="Creditos" />
     <item
         android:id="@+id/menu_promociones"
         android:icon="@drawable/icon_categorias_promociones"

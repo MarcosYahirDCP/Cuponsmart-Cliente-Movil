@@ -45,6 +45,7 @@ class PromocionesFragment : Fragment(), NotificarClick,  AdapterView.OnItemSelec
         super.onCreate(savedInstanceState)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,6 +57,7 @@ class PromocionesFragment : Fragment(), NotificarClick,  AdapterView.OnItemSelec
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun personalizarBotones(){
         binding.btnFarmacia.setOnClickListener{
             obtenerPromocionesCategoria(1)
@@ -89,13 +91,7 @@ class PromocionesFragment : Fragment(), NotificarClick,  AdapterView.OnItemSelec
             obtenerPromociones()
 
         }
-        binding.etSearch.setOnClickListener {
-            binding.etSearch.getBackground().setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP)
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding.etSearch.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
-            }, 100)
-            mostrarDatePicker()
-        }
+
     }
     private fun cargarSpiner(){
         PromocionDAO.obtenerEmpresas(requireContext(),"empresa/listaEmpresa"){
@@ -111,41 +107,7 @@ class PromocionesFragment : Fragment(), NotificarClick,  AdapterView.OnItemSelec
         binding.spEmpresas.adapter = adapter
         binding.spEmpresas.onItemSelectedListener = this
     }
-    private fun mostrarDatePicker() {
-        val datePicker = DatePickerFragment2 { dia, mes, anio -> onDateSelected(dia, mes, anio) }
-        datePicker.show(childFragmentManager,"datepicker")
 
-    }
-
-    //------- METODO QUE ESTABLECE LA FECHA SELECCIONADA
-    fun onDateSelected (dia:Int, mes: Int, anio:Int){
-        val fechaFormateadaSQL = String.format("%04d-%02d-%02d", anio, mes + 1, dia)
-        binding.etSearch.setText(fechaFormateadaSQL)
-//        obtenerPromocionesFechaInicio(fechaEcode)
-
-    }
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun obtenerPromocionesFechaInicio(fecha: String){
-        PromocionDAO.obtenerPromocionesFechaInicio(requireContext(), "promocion/promocionFechaInicio", fecha){
-            respuesta->
-            serialziarRespuestaFechaInicio(respuesta)
-        }
-    }
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun serialziarRespuestaFechaInicio(json: String){
-        val typeLista= object : TypeToken<ArrayList<Promocion>>() {}.type
-        listaPromociones = gson.fromJson(json,typeLista)
-        // Obtener la fecha actual
-        val fechaActual = LocalDate.now()
-
-        // Filtrar las promociones con fecha de finalización después de la fecha actual
-        listaPromociones = listaPromociones.filter {
-            it.finPromocion?.let { fechaFin ->
-                LocalDate.parse(fechaFin).isAfter(fechaActual)
-            } ?: false
-        } as ArrayList<Promocion>
-        cargarInformacionRecycler()
-    }
     private fun limpiarRecycler() {
         listaPromociones.clear()
         cargarInformacionRecycler()
@@ -196,6 +158,7 @@ class PromocionesFragment : Fragment(), NotificarClick,  AdapterView.OnItemSelec
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val empresaSeleccionada: Empresa = parent?.getItemAtPosition(position) as Empresa
         PromocionDAO.obtenerPromocionesPorEmpresa(requireContext(),"promocion/promocionesPorEmpresa",empresaSeleccionada.idEmpresa!!){
