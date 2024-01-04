@@ -1,4 +1,4 @@
-package uv.tc.cuponsmart_android
+package uv.tc.cuponsmart_android.interfaces
 
 interface Update {
 

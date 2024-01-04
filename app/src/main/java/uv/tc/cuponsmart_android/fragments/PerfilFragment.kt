@@ -4,21 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
-import uv.tc.cuponsmart_android.R
-import uv.tc.cuponsmart_android.Update
+import uv.tc.cuponsmart_android.interfaces.Update
 import uv.tc.cuponsmart_android.ViewPagerAdapterConfiguracion
 import uv.tc.cuponsmart_android.databinding.FragmentPerfilBinding
 import uv.tc.cuponsmart_android.modelo.DAO.ClienteDAO
 import uv.tc.cuponsmart_android.modelo.poko.Cliente
 
 
-class PerfilFragment : Fragment(), Update{
+class PerfilFragment : Fragment(), Update {
     private lateinit var binding : FragmentPerfilBinding
     var cliente = Cliente()
     var clienteConsulta = Cliente()

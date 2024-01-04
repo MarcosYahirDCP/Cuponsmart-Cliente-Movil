@@ -13,4 +13,7 @@ class Empresa {
     val idUbicacion: Int? = null
     val fotoBase64: String? = null
 
+    override fun toString(): String {
+        return nombreComercial ?: nombre ?: "Nombre Desconocido"
+    }
 }

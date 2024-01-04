@@ -30,7 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import uv.tc.cuponsmart_android.OnFragmentInteractionListener
+import uv.tc.cuponsmart_android.interfaces.OnFragmentInteractionListener
 import uv.tc.cuponsmart_android.R
 import uv.tc.cuponsmart_android.databinding.FragmentDatosUbicacionBinding
 import uv.tc.cuponsmart_android.modelo.DAO.CatalogoDAO
@@ -39,7 +39,8 @@ import uv.tc.cuponsmart_android.modelo.poko.Municipio
 import kotlin.math.pow
 import kotlin.math.roundToLong
 
-class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener) : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener,OnFragmentInteractionListener,
+class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener) : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener,
+    OnFragmentInteractionListener,
     AdapterView.OnItemSelectedListener {
     //---------- DECLARACION DE VARIABLES ------------//
     private var latitud: Double = 0.0

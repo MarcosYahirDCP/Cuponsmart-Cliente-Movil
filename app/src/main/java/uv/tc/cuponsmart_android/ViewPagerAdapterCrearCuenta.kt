@@ -7,6 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import uv.tc.cuponsmart_android.fragments.DatosCuentaFragment
 import uv.tc.cuponsmart_android.fragments.DatosPersonalesFragment
 import uv.tc.cuponsmart_android.fragments.DatosUbicacionFragment
+import uv.tc.cuponsmart_android.interfaces.OnFragmentInteractionListener
 
 class ViewPagerAdapterCrearCuenta(
     fragmentManager: FragmentManager,

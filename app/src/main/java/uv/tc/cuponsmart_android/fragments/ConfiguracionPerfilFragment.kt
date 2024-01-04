@@ -1,8 +1,6 @@
 package uv.tc.cuponsmart_android.fragments
 
-import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -17,16 +15,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import uv.tc.cuponsmart_android.R
-import uv.tc.cuponsmart_android.Update
+import uv.tc.cuponsmart_android.interfaces.Update
 import uv.tc.cuponsmart_android.databinding.FragmentConfiguracionPerfilBinding
 import uv.tc.cuponsmart_android.modelo.DAO.ClienteDAO
 import uv.tc.cuponsmart_android.modelo.poko.Cliente
 import uv.tc.cuponsmart_android.modelo.poko.Mensaje
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ofPattern
 
 class ConfiguracionPerfilFragment : Fragment() {

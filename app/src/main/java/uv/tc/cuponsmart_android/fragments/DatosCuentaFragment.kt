@@ -1,6 +1,5 @@
 package uv.tc.cuponsmart_android.fragments
 
-import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,12 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import uv.tc.cuponsmart_android.OnFragmentInteractionListener
+import uv.tc.cuponsmart_android.interfaces.OnFragmentInteractionListener
 import uv.tc.cuponsmart_android.R
 import uv.tc.cuponsmart_android.databinding.FragmentDatosCuentaBinding
 
 
-class DatosCuentaFragment (private val listener: OnFragmentInteractionListener): Fragment(), OnFragmentInteractionListener{
+class DatosCuentaFragment (private val listener: OnFragmentInteractionListener): Fragment(),
+    OnFragmentInteractionListener {
     //------------ DECLARACION DE VARIABLES ---------//
     private lateinit var binding: FragmentDatosCuentaBinding
 

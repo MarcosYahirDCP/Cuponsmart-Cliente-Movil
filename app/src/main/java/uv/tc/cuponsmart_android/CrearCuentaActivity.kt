@@ -14,6 +14,7 @@ import uv.tc.cuponsmart_android.modelo.DAO.ClienteDAO
 import uv.tc.cuponsmart_android.modelo.DAO.UbicacionDAO
 import uv.tc.cuponsmart_android.databinding.ActivityCrearCuentaBinding
 import uv.tc.cuponsmart_android.fragments.DatosCuentaFragment
+import uv.tc.cuponsmart_android.interfaces.OnFragmentInteractionListener
 import uv.tc.cuponsmart_android.modelo.poko.Cliente
 import uv.tc.cuponsmart_android.modelo.poko.Coordenada
 import uv.tc.cuponsmart_android.modelo.poko.Mensaje
