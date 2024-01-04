@@ -41,7 +41,7 @@ import kotlin.math.roundToLong
 
 class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener) : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener,OnFragmentInteractionListener,
     AdapterView.OnItemSelectedListener {
-    /---------- DECLARACION DE VARIABLES ------------//
+    //---------- DECLARACION DE VARIABLES ------------//
     private var latitud: Double = 0.0
     private var longitud: Double=0.0
     private lateinit var binding: FragmentDatosUbicacionBinding
