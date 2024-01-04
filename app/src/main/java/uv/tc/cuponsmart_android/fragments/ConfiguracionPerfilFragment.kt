@@ -30,8 +30,8 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ofPattern
 
 class ConfiguracionPerfilFragment : Fragment() {
+    //---------- VARIABLES ----------//
     private var update: Update? = null
-
     private lateinit var binding: FragmentConfiguracionPerfilBinding
     private lateinit var cliente: Cliente
     private var clienteConsulta = Cliente()
@@ -39,12 +39,13 @@ class ConfiguracionPerfilFragment : Fragment() {
     var fechaSQL = ""
     val gson = Gson()
 
+    //------- METODOS DEL FRAGMENT ---------//
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.O) //SE SOLICITA DEBIDO A QUE PARA APLICAR EL METODO SE REQUIERE UNA VERSION DE API ESPECIFICA, SIN ESTO JALA PERO ARROJA UN ERROR
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -69,14 +70,16 @@ class ConfiguracionPerfilFragment : Fragment() {
             throw ClassCastException("El padre debe implementar OnNombreCompletoUpdateListener")
         }
     }
+    //------------ METODO PARA MOSTRAR EL DATEPICKER ------------//
     private fun mostrarDatePicker() {
         val datePicker = DatePickerFragment { dia, mes, anio -> onDateSelected(dia, mes, anio) }
         datePicker.show(childFragmentManager, "datepicker")
 
     }
-
+    //------- METODO PARA REALIZAR LA OBTENCION A LA BASE DE LOS DATOS DEL CLIENTE ---------//
+    //-------- AUNQUE SE ESTA PASANDO EL CLIENTE, PARA QUE SE PUEDA ACTUALIZAR DE MANERA DINAMICA SE DECIDIO IMPLEMENTAR DE ESTA MANERA ---------//
     @RequiresApi(Build.VERSION_CODES.O)
-    fun cargarDatosPerfil(idCliente: Int) {
+    private fun cargarDatosPerfil(idCliente: Int) {
         ClienteDAO.obtenerClienteID(
             requireContext(),
             "cliente/clientePorId",
@@ -87,10 +90,12 @@ class ConfiguracionPerfilFragment : Fragment() {
 
     }
 
+    //--------- SE OBTIENEN LOS DATOS DEL CLIENTE -------------//
     private fun obtenerDatosActivity() {
         cliente = arguments?.getParcelable("cliente")!!
     }
 
+    //------------ SE INTERPRETA LA RESPUESTA -------------//
     @RequiresApi(Build.VERSION_CODES.O)
     private fun serializarRespuestaClieteId(json: String) {
 
@@ -102,8 +107,10 @@ class ConfiguracionPerfilFragment : Fragment() {
         binding.etFechaNacimientoPerfil.setText(convertirFormatoFecha(clienteConsulta.fechaNacimiento!!))
         fechaSQL = cliente.fechaNacimiento!!
     }
+
+    //------------- METODO AUXILIAR PARA MOSTRAR LA FECHA EN LA INTERFAZ -----------//
     @RequiresApi(Build.VERSION_CODES.O)
-    fun convertirFormatoFecha(fechaOriginal: String): String {
+    private fun convertirFormatoFecha(fechaOriginal: String): String {
         try {
             val formatoOriginal = ofPattern("yyyy-MM-dd")
             val fechaLocalDate: LocalDate = LocalDate.parse(fechaOriginal, formatoOriginal)
@@ -115,15 +122,18 @@ class ConfiguracionPerfilFragment : Fragment() {
             return fechaOriginal
         }
     }
-    fun onDateSelected(dia: Int, mes: Int, anio: Int) {
+
+    //--------- METODO QUE ASIGNA LA FECHA INGRESADA EN EL DATEPICKER---------//
+    private fun onDateSelected(dia: Int, mes: Int, anio: Int) {
         val fechaFormateadaSQL = String.format("%04d-%02d-%02d", anio, mes + 1, dia)
         val fechaFormateadaView = String.format("%02d-%02d-%04d", dia, mes + 1, anio)
         binding.etFechaNacimientoPerfil.setText(fechaFormateadaView)
         fechaSQL = fechaFormateadaSQL
     }
 
+    //---------- PERSONALIZACION DE COMPONENTES Y EVENTOS ---------/
     @RequiresApi(Build.VERSION_CODES.O)
-    fun personalizarComponentes() {
+    private fun personalizarComponentes() {
         binding.etFechaNacimientoPerfil.setOnClickListener {
             binding.etFechaNacimientoPerfil.getBackground()
                 .setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP)
@@ -135,6 +145,7 @@ class ConfiguracionPerfilFragment : Fragment() {
             }, 100)
             mostrarDatePicker()
         }
+        
         binding.etNombrePerfil.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 // El editText tiene el foco
@@ -144,6 +155,7 @@ class ConfiguracionPerfilFragment : Fragment() {
                 binding.etNombrePerfil.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
             }
         }
+        
         binding.etApellidoPaternoPerfil.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 // El editText tiene el foco
@@ -153,6 +165,7 @@ class ConfiguracionPerfilFragment : Fragment() {
                 binding.etApellidoPaternoPerfil.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
             }
         }
+        
         binding.etApellidoMaternoPerfil.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 // El editText tiene el foco
@@ -162,6 +175,7 @@ class ConfiguracionPerfilFragment : Fragment() {
                 binding.etApellidoMaternoPerfil.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
             }
         }
+        
         binding.etNumeroTelefonoPerfil.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 // El editText tiene el foco
@@ -171,6 +185,7 @@ class ConfiguracionPerfilFragment : Fragment() {
                 binding.etNumeroTelefonoPerfil.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
             }
         }
+        
         binding.etPasswordPerfil1.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 // El editText tiene el foco
@@ -180,6 +195,7 @@ class ConfiguracionPerfilFragment : Fragment() {
                 binding.etPasswordPerfil1.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
             }
         }
+        
         binding.etPasswordPerfil2.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 // El editText tiene el foco
@@ -189,10 +205,12 @@ class ConfiguracionPerfilFragment : Fragment() {
                 binding.etPasswordPerfil2.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
             }
         }
+        
         binding.btnEditar.setOnClickListener(){
             animacionBotones(binding.btnEditar)
             espera(true,bandera)
         }
+        
         binding.btnCancelar.setOnClickListener(){
             animacionBotones(binding.btnCancelar)
             bandera =false
@@ -202,22 +220,21 @@ class ConfiguracionPerfilFragment : Fragment() {
             binding.etApellidoMaternoPerfil.setText(clienteConsulta.apellidoMaterno)
             binding.etNumeroTelefonoPerfil.setText(clienteConsulta.telefono)
             binding.etFechaNacimientoPerfil.setText(convertirFormatoFecha(clienteConsulta.fechaNacimiento!!))
-//            binding.etPasswordPerfil.setText(clienteConsulta.contraseña)
         }
+        
         binding.btnPassword.setOnClickListener(){
             animacionBotones(binding.btnPassword)
             bandera=true
             espera(true,bandera)
-
-
-
         }
+        
         binding.btnGuardar.setOnClickListener(){
             animacionBotones(binding.btnGuardar)
             guardarCambios()
-
         }
     }
+
+    //------ METODO PARA GUARDAR LOS CAMBIOS DEL PERFIL --------//
     private fun guardarCambios(){
         var clienteActualizado = Cliente()
         clienteActualizado.nombre = binding.etNombrePerfil.text.toString()
@@ -232,31 +249,31 @@ class ConfiguracionPerfilFragment : Fragment() {
         }else{
             clienteActualizado.contraseña = binding.etPasswordPerfil1.text.toString()
         }
-//        Toast.makeText(context,"contraseña: ${clienteActualizado.contraseña}",Toast.LENGTH_LONG).show()
         ClienteDAO.editarCliente(requireContext(),"cliente/editarCliente", clienteActualizado){
             respuesta->
-
-            serializarRespuestaCrearCliente(respuesta)
+            serializarRespuestaEditarCliente(respuesta)
         }
         var nombreCompleto = clienteActualizado.nombre!! + " " + clienteActualizado.apellidoPaterno + " " + clienteActualizado.apellidoMaterno
-        update?.actualizarNombreCompleto(nombreCompleto)
+        update?.actualizarNombreCompleto(nombreCompleto) //SE LLAMA A LA INTERFACE PARA ACTUALIZAR EN EL FRAGMENT PADRE
 
     }
 
-    private fun serializarRespuestaCrearCliente(json : String){
+    //---------- SE INTERPRETA LA RESPUESTA TRAS EDITAR ------------//
+    private fun serializarRespuestaEditarCliente(json : String){
         var respuesta = gson.fromJson(json, Mensaje::class.java)
         Toast.makeText(context,respuesta.mensaje,Toast.LENGTH_SHORT).show()
         if (!respuesta.error){
             espera(false,false)
-
         }
     }
+
+    //--------- SE VALIDA QUE LAS CONTRASEÑAS COINCIDAN -----------//
     private fun validarPassword(): Boolean {
         val password1 = binding.etPasswordPerfil1.text.toString()
         val password2 = binding.etPasswordPerfil2.text.toString()
 
         if (password1 == password2) {
-            return true
+            return true 
         } else {
             Toast.makeText(requireContext(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
             binding.etPasswordPerfil1.error ="Las contraseñas no coinciden"
@@ -264,12 +281,16 @@ class ConfiguracionPerfilFragment : Fragment() {
             return false
         }
     }
+
+    //--------- METODO AUXILIAR PARA QUE SE VISUALICE LA ANIMACION DE LOS BOTONES, DEBIDO A QUE SE MODIFICA LA VISIBILIDAD NO SE APRECIA SIN ESTO ----------//
     private fun espera(estado : Boolean,bandera: Boolean){
         val handler = Handler()
         handler.postDelayed({
             actualizarVisibilidadEdicion(estado,bandera)
         }, 200)
     }
+
+    //------- METODO PARA GESTIONAR LA VISISBILIDAD DE LOS COMPONENTES --------//
     private fun actualizarVisibilidadEdicion(habilitarEdicion: Boolean, bandera : Boolean) {
         binding.etNombrePerfil.isEnabled = habilitarEdicion
         binding.etApellidoPaternoPerfil.isEnabled = habilitarEdicion
@@ -293,6 +314,8 @@ class ConfiguracionPerfilFragment : Fragment() {
             binding.etPasswordPerfil2.setText(clienteConsulta.contraseña)
         }
     }
+
+    //-------- METODO PARA LAS ANIMACIONES DE LOS BOTONES ----------//
     private fun animacionBotones(boton : Button){
         val colorAnimation = ObjectAnimator.ofArgb(boton, "backgroundColor",
             Color.parseColor("#03e9f4"),
@@ -301,6 +324,7 @@ class ConfiguracionPerfilFragment : Fragment() {
         colorAnimation.start()
     }
 
+    //--------- METODO ESTATICO PARA RECIBIR DATOS AL CREAR EL FRAGMENTO ----------//
     companion object {
         fun newInstance(cliente: Cliente): ConfiguracionPerfilFragment {
             val fragment = ConfiguracionPerfilFragment()
