@@ -41,7 +41,7 @@ import kotlin.math.roundToLong
 
 class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener) : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener,OnFragmentInteractionListener,
     AdapterView.OnItemSelectedListener {
-
+    /---------- DECLARACION DE VARIABLES ------------//
     private var latitud: Double = 0.0
     private var longitud: Double=0.0
     private lateinit var binding: FragmentDatosUbicacionBinding
@@ -51,18 +51,17 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
     private lateinit var estados: List<Estado>
     private lateinit var municipios: List<Municipio>
     private var idMunicipioSeleccionado: Int =0
-
-        private lateinit var shimmerContainer: LinearLayout
-        private lateinit var dataContainer: LinearLayout
-
+    //---------- LAYOUTS PARA EFECTO DE CARGA -------//
+    private lateinit var shimmerContainer: LinearLayout
+    private lateinit var dataContainer: LinearLayout
     private var isInitialMapLoad = true
 
+    //------- METODOS DEL FRAGMENT ----------//
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         locationCallback = createLocationCallback()
         requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-
     }
 
     override fun onCreateView(
@@ -73,31 +72,27 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
         shimmerContainer = binding.vistaCargando
         dataContainer = binding.vistaCargada
         cargarSpiners()
-
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        personalizarComponentes()
+        Handler(Looper.getMainLooper()).postDelayed({
+            showData()
+        },5000)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+    }
+    
+    //-------- METODO PARA ESTABLECER LA VISIBILIDAD DE LAS LAYOUTS DE CARGA --------//
     private fun showData() {
         binding.vistaCargando.isVisible=false
         binding.vistaCargada.isVisible = true
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        //crearDialogCarga()
-        personalizarComponentes()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            showData()
-        },5000)
-
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-
-    }
-
-    fun personalizarComponentes(){
-        
+    //-------- METODO PARA PERSONALIZAR COMPONENTES Y EVENTOS ---------//
+    private fun personalizarComponentes(){
         binding.etCalle.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
                 binding.etCalle.getBackground().setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP);
@@ -113,6 +108,7 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
                 binding.etColonia.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
             }
         }
+        
         binding.etCodigoPostal.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
                 binding.etCodigoPostal.getBackground().setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP);
@@ -120,6 +116,7 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
                 binding.etCodigoPostal.getBackground().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
             }
         }
+        
         binding.etNumeroCasa.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
                 binding.etNumeroCasa.getBackground().setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_ATOP);
@@ -129,26 +126,23 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
         }
     }
 
-    fun cargarSpiners(){
-
-            CatalogoDAO.obtenerEstados(requireContext(),"catalogo/obtenerEstados"){ estados ->
-                if (estados != null) {
-                    this.estados = estados
-                    val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, estados)
-                    adapter.setDropDownViewResource(com.google.android.material.R.layout.support_simple_spinner_dropdown_item)
-                    binding.spEstado.adapter = adapter
-                    binding.spEstado.onItemSelectedListener=this@DatosUbicacionFragment
-
-                } else {
-                    // Maneja el error, por ejemplo, muestra un mensaje de error
-                    Toast.makeText(context, "Error al obtener estados", Toast.LENGTH_SHORT).show()
-                }
-
+    //--------- METODO PARA LLENAR EL SPINER ESTADO -------------//
+    private fun cargarSpiners(){
+        CatalogoDAO.obtenerEstados(requireContext(),"catalogo/obtenerEstados"){ estados ->
+            if (estados != null) {
+                this.estados = estados
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, estados)
+                adapter.setDropDownViewResource(com.google.android.material.R.layout.support_simple_spinner_dropdown_item)
+                binding.spEstado.adapter = adapter
+                binding.spEstado.onItemSelectedListener=this@DatosUbicacionFragment
+            } else {
+                Toast.makeText(context, "Error al obtener estados", Toast.LENGTH_SHORT).show()
+            }
         }
-
     }
-
-    fun llenarMunicipios(idEstado : Int){
+    
+    //-------- METODO PARA LLENAR EL SPINNER DE LOS MUNICIPIOS ----------//
+    private fun llenarMunicipios(idEstado : Int){
            CatalogoDAO.obtenerMunicipiosEstado(requireContext(), "catalogo/obtenerMunicipiosEstados/$idEstado"){
                municipios ->
                if (municipios !=null){
@@ -160,17 +154,10 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
            }
     }
 
-//    fun crearDialogCarga(){
-//        progressDialog = ProgressDialog(requireContext())
-//        progressDialog.setMessage("Cargando...")
-//        progressDialog.setCancelable(false)
-//        progressDialog.show()
-//    }
-
+    //---------- METODO DE ACCIONES AL CARGAR EL MAPA ----------//
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.setOnMapClickListener { latLng -> onMapClick(latLng) }
-
         // Habilitar la capa de mi ubicación
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -185,8 +172,6 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
                     val currentLatLng = LatLng(it.latitude, it.longitude)
                     // Mover la cámara a la ubicación actual y hacer zoom
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, DEFAULT_ZOOM))
-
-                    //progressDialog.dismiss()
                 }
             }
         } else {
@@ -196,10 +181,7 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
-            //progressDialog.dismiss()
         }
-
-
     }
 
     private fun getLastLocationAndZoom() {
@@ -212,20 +194,19 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
         }
     }
 
+    //--------- METODO PARA ACTUALIZAR LA UBICACION EN TIEMPO REAK ------------//
     private fun startLocationUpdates() {
         val locationRequest = LocationRequest.create().apply {
             interval = 5000 // Intervalo de actualización de ubicación en milisegundos
             fastestInterval = 2000 // La frecuencia más rápida en la que se recibirán actualizaciones
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
-
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Request location permissions
             val REQUEST_CODE_LOCATION = 1
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_CODE_LOCATION)
             return
         }
-
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -233,6 +214,7 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
         )
     }
 
+    //--------- METODO RELACIONADO CON LA CAMARA DEL MAPA ------------//
     private fun createLocationCallback(): LocationCallback {
         return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
@@ -248,6 +230,7 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
         }
     }
 
+    //------------- METODO AL DAR CLIC EN EL MAPA -----------//
     override fun onMapClick(latLng: LatLng) {
         // Clear existing markers
         mMap.clear()
@@ -256,10 +239,7 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
         val context = requireContext()
         val geocoder = Geocoder(context.applicationContext)
         val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-
-        // Extract relevant address information
         val address = addresses!![0]
-
         val calle = address.getAddressLine(0).substring(0, address.getAddressLine(0).indexOf(","))
         var i = calle.length - 1
         while (i >= 0) {
@@ -272,9 +252,9 @@ class DatosUbicacionFragment(private val listener: OnFragmentInteractionListener
         val colonia = address.locality
         val codigoPostal = address.postalCode
 
+        //------- REDONDEAMOS LOS VALORES PARA QUE COINCIDAN CON 
         latitud = latLng.latitude.roundTo(8)
         longitud = latLng.longitude.roundTo(8)
-        Toast.makeText(context, "La latitud es: ${latLng.latitude} y la longitud es ${latLng.longitude}", Toast.LENGTH_LONG).show()
 
         // Se asignan los datos a los campos de texto
         binding.etCalle.setText(nuevaCalle)
