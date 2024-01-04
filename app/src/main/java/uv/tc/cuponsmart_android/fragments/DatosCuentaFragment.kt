@@ -14,9 +14,10 @@ import uv.tc.cuponsmart_android.databinding.FragmentDatosCuentaBinding
 
 
 class DatosCuentaFragment (private val listener: OnFragmentInteractionListener): Fragment(), OnFragmentInteractionListener{
-
+    //------------ DECLARACION DE VARIABLES ---------//
     private lateinit var binding: FragmentDatosCuentaBinding
 
+    //--------- METODOS DEL FRAGMENT ---------//
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,6 +36,7 @@ class DatosCuentaFragment (private val listener: OnFragmentInteractionListener):
         personalizarComponentes()
     }
 
+    //------- METODO PARA PERSONALIZAR COMPONENTES Y EVENTOS ----------//
         private  fun personalizarComponentes(){
             binding.etCorreo.setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus){
@@ -66,6 +68,7 @@ class DatosCuentaFragment (private val listener: OnFragmentInteractionListener):
             }
         }
 
+    //------ METODO PARA OBTENER LOS DATOS DE LOS COMPONENTES --------//
     override fun obtenerDatos(): Map<String, String> {
         val datos = mapOf(
             "correo" to binding.etCorreo.text.toString(),
@@ -75,6 +78,7 @@ class DatosCuentaFragment (private val listener: OnFragmentInteractionListener):
         return datos
     }
 
+    //---------- METODO PARA VALIDAR QUE LOS CAMPOS ESTEN LLENOS ---------//
     override fun validarCamposLlenos(): Boolean {
         var esCorrecto = true
         if (binding.etCorreo.text.isNullOrBlank()){
@@ -96,6 +100,7 @@ class DatosCuentaFragment (private val listener: OnFragmentInteractionListener):
         return esCorrecto
     }
 
+    //------- METODO PARA VALIDAR QUE LAS CONTRASEÑAS COINCIDAN ---------//
     override fun validarPassword(): Boolean {
         val password1 = binding.etPassword1.text.toString()
         val password2 = binding.etPassword2.text.toString()
@@ -110,6 +115,7 @@ class DatosCuentaFragment (private val listener: OnFragmentInteractionListener):
         }
     }
 
+    //------------ METODO PARA OBTENER EL ID DEL FRAGMENTO DESDE 0 A 2 ---------//
     override fun obtenerFragmentId(): Int {
         return 1
     }
